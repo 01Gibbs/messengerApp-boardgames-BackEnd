@@ -32,5 +32,40 @@ describe('app', () => {
           })
       })
     })
+    describe.only('GET /api/reviews', () => {
+      test('200: GET: responds with server ok message', () => {
+        return request(app)
+          .get('/api/reviews')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.reviews.length).toBe(13)
+            body.reviews.forEach((review) => {
+              expect(review).toMatchObject({
+                owner: expect.any(String),
+                title: expect.any(String),
+                review_id: expect.any(Number),
+                category: expect.any(String),
+                review_img_url: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                designer: expect.any(String),
+                comment_count: expect.any(String),
+              })
+            })
+          })
+      })
+      test('returns array of objects ordered by date', () => {
+        return request(app)
+          .get('/api/reviews')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.reviews).toStrictEqual(
+              [...body.reviews].sort((a, b) => {
+                return new Date(b.created_at) - new Date(a.created_at)
+              })
+            )
+          })
+      })
+    })
   })
 })

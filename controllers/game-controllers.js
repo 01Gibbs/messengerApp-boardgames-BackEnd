@@ -1,12 +1,18 @@
-const { fetchCategories } = require('../models/game-model.js')
+const { fetchCategories, fetchReviews } = require('../models/game-model.js')
 
 const getCategories = (request, response) => {
-  // response.status(200).send({ msg: 'hello there' })
   fetchCategories().then((categories) => {
     response.status(200).send({ categories })
   })
 }
 
+const getReviews = (request, response) => {
+  fetchReviews().then((reviews) => {
+    response.status(200).send({ reviews })
+  })
+}
+
 module.exports = {
   getCategories,
+  getReviews,
 }
