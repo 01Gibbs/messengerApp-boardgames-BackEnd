@@ -32,7 +32,7 @@ describe('app', () => {
           })
       })
     })
-    describe.only('GET /api/reviews', () => {
+    describe('GET /api/reviews', () => {
       test('200: GET: responds with server ok message', () => {
         return request(app)
           .get('/api/reviews')
@@ -82,6 +82,29 @@ describe('app', () => {
               descending: true,
             })
           })
+      })
+    })
+    describe.only('GET /api/reviews/:review_id', () => {
+      test('200: GET: responds with server ok message', () => {
+        return request(app)
+          .get('/api/reviews/1')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.review).toMatchObject({
+              review_id: expect.any(Number),
+              title: expect.any(String),
+              review_body: expect.any(String),
+              designer: expect.any(String),
+              review_img_url: expect.any(String),
+              votes: expect.any(Number),
+              category: expect.any(String),
+              owner: expect.any(String),
+              created_at: expect.any(String),
+            })
+          })
+      })
+      test('404: GET: respond with not found', () => {
+        return request(app).get('/api/reviews/999').expect(404)
       })
     })
   })
