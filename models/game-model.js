@@ -37,7 +37,37 @@ const fetchReviews = () => {
     })
 }
 
+const fetchReview = (reviewId) => {
+  return db
+    .query({
+      text: `
+      SELECT 
+        review_id,
+        title,
+        review_body, 
+        designer,
+        review_img_url,
+        votes,
+        category,
+        owner, 
+        created_at
+      FROM reviews 
+      WHERE review_id = $1
+        `,
+      values: [reviewId],
+    })
+    .then((result) => {
+      if (result.rows.length < 1) throw new Error('id not found')
+      return result.rows[0]
+    })
+    .catch((err) => {
+      console.error(err)
+      throw new Error('id not found')
+    })
+}
+
 module.exports = {
   fetchCategories,
   fetchReviews,
+  fetchReview,
 }
