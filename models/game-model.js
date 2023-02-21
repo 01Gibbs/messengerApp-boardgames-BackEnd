@@ -25,11 +25,10 @@ const fetchReviews = () => {
         r.created_at,
         r.votes,
         r.designer,
-        COUNT(c.*) as comment_count 
+        (SELECT COUNT(*) 
+        FROM comments as c 
+        where c.review_id = r.review_id) as comment_count
       FROM reviews as r
-      LEFT JOIN comments as c 
-      ON c.review_id = r.review_id
-      GROUP BY r.review_id
       ORDER BY r.created_at DESC;
         `
     )

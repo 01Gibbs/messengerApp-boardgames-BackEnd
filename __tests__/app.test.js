@@ -50,9 +50,27 @@ describe('app', () => {
                 votes: expect.any(Number),
                 designer: expect.any(String),
                 comment_count: expect.any(String),
-                //test expect check specific comment count
               })
             })
+          })
+      })
+      test('comment_count is correct', () => {
+        return request(app)
+          .get('/api/reviews')
+          .expect(200)
+          .then(({ body }) => {
+            expect(
+              body.reviews.find((review) => review.review_id === 1)
+                .comment_count
+            ).toBe('0')
+            expect(
+              body.reviews.find((review) => review.review_id === 2)
+                .comment_count
+            ).toBe('3')
+            expect(
+              body.reviews.find((review) => review.review_id === 3)
+                .comment_count
+            ).toBe('3')
           })
       })
       test('returns array of objects ordered by date', () => {
@@ -60,11 +78,9 @@ describe('app', () => {
           .get('/api/reviews')
           .expect(200)
           .then(({ body }) => {
-            expect(body.reviews).toStrictEqual(
-              [...body.reviews].sort((a, b) => {
-                return new Date(b.created_at) - new Date(a.created_at)
-              })
-            )
+            expect(body.reviews).toBeSortedBy('created_at', {
+              descending: true,
+            })
           })
       })
     })
