@@ -50,6 +50,7 @@ describe('app', () => {
                 votes: expect.any(Number),
                 designer: expect.any(String),
                 comment_count: expect.any(String),
+                //test expect check specific comment count
               })
             })
           })

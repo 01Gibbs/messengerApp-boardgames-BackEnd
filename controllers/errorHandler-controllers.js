@@ -1,5 +1,13 @@
 const express = require('express')
 
+// exports.handleCustomErrors = (error, request, response, next) => {
+//   if (error === 'thing from promise return') {
+//     response.status(404).send({ msg: 'Not Found' })
+//   } else {
+//     next(error)
+//   }
+// }
+
 exports.handle500s = (error, request, response, next) => {
   console.log(error)
   response.status(500).send({
