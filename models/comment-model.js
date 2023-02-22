@@ -11,11 +11,14 @@ const fetchCommentsByReview = (reviewId) => {
       values: [reviewId],
     })
     .then((result) => {
-      if (!rowCount) {
-        return result.rows
-      } else {
-        return result.rows
-      }
+      // console.log(result)
+      // console.log(result.rows, 'result.rows')
+      if (result.rows.length < 1)
+        return Promise.reject({
+          status: 404,
+          msg: 'id not found',
+        })
+      return result.rows
     })
 }
 

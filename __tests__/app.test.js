@@ -108,12 +108,11 @@ describe('app', () => {
           .get('/api/reviews/999')
           .expect(404)
           .then(({ body }) => {
-            console.log(body)
             expect(body.msg).toBe('review not found')
           })
       })
     })
-    describe('GET /api/reviews/:review_id/comments', () => {
+    describe.only('GET /api/reviews/:review_id/comments', () => {
       test('200: GET: responds with server ok message', () => {
         return request(app)
           .get('/api/reviews/2/comments')
@@ -131,19 +130,30 @@ describe('app', () => {
             })
           })
       })
-      // test('200: GET: responds with empty comment array if none found', () => {
-      //   request(app)
-      //     .get('/api/reviews/1/comments')
-      //     .expect(200)
-      //     .then((body) => {
-      //       console.log(body)
+      test('200: GET: responds with empty comment array if none found', () => {
+        request(app)
+          .get('/api/reviews/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.msg).toBe('comments not found')
+          })
+      })
+      // test('404: GET: respond with not found', () => {
+      //   return request(app)
+      //     .get('/api/reviews/999/comments')
+      //     .expect(404)
+      //     .then(({ body }) => {
+      //       expect(body.msg).toBe('id not found')
       //     })
       // })
-      // test('404: GET: respond with not found', () => {
-      //   return request(app).get('/api/reviews/999/comments').expect(404)
+      // test('400: GET: responds with bad request when provided non-existent review_id', () => {
+      //   return request(app)
+      //     .get('/api/reviews/999/comments')
+      //     .expect(400)
+      //     .then(({ body }) => {
+      //       expect(body).toHaveProperty('msg', 'Bad Request')
+      //     })
       // })
-      //test 400 -> invalid ID, ID that
-      //test 200 return empty comments array if none found.
     })
   })
 })

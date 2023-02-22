@@ -28,9 +28,6 @@ const fetchReviews = () => {
         })
       return result.rows
     })
-    .catch((err) => {
-      next(err)
-    })
 }
 
 const fetchReview = (reviewId) => {

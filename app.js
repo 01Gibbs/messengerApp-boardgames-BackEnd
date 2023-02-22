@@ -7,6 +7,7 @@ const {
   handle500s,
   handle404s,
   handleCustomErrors,
+  // handlePSQL400s,
 } = require('./controllers/errorHandler-controllers.js')
 
 app.get('/api/categories', getCategories)
@@ -18,6 +19,8 @@ app.get('/api/reviews/:review_id', getReview)
 app.get('/api/reviews', getReviews)
 
 app.use('/api/*', handle404s)
+
+// app.use(handlePSQL400s)
 
 app.use(handleCustomErrors)
 
