@@ -1,22 +1,25 @@
 const express = require('express')
 const app = express()
-const {
-  getCategories,
-  getReview,
-  getReviews,
-} = require('./controllers/game-controllers.js')
+const { getCategories } = require('./controllers/category-controllers.js')
+const { getCommentsByReview } = require('./controllers/comments-controllers.js')
+const { getReview, getReviews } = require('./controllers/review-controllers.js')
 const {
   handle500s,
   handle404s,
+  handleCustomErrors,
 } = require('./controllers/errorHandler-controllers.js')
 
 app.get('/api/categories', getCategories)
+
+app.get('/api/reviews/:review_id/comments', getCommentsByReview)
 
 app.get('/api/reviews/:review_id', getReview)
 
 app.get('/api/reviews', getReviews)
 
-app.all('/api/*', handle404s)
+app.use('/api/*', handle404s)
+
+app.use(handleCustomErrors)
 
 app.use(handle500s)
 

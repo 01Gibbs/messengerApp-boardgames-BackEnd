@@ -84,7 +84,7 @@ describe('app', () => {
           })
       })
     })
-    describe.only('GET /api/reviews/:review_id', () => {
+    describe('GET /api/reviews/:review_id', () => {
       test('200: GET: responds with server ok message', () => {
         return request(app)
           .get('/api/reviews/1')
@@ -104,8 +104,38 @@ describe('app', () => {
           })
       })
       test('404: GET: respond with not found', () => {
-        return request(app).get('/api/reviews/999').expect(404)
+        return request(app)
+          .get('/api/reviews/999')
+          .expect(404)
+          .then(({ body }) => {
+            console.log(body)
+            expect(body.msg).toBe('review not found')
+          })
       })
+    })
+    describe('GET /api/reviews/:review_id/comments', () => {
+      test('200: GET: responds with server ok message', () => {
+        return request(app)
+          .get('/api/reviews/2/comments')
+          .expect(200)
+          .then(({ body }) => {
+            body.reviewComments.forEach((comment) => {
+              expect(comment).toMatchObject({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: expect.any(Number),
+              })
+            })
+          })
+      })
+      // test('404: GET: respond with not found', () => {
+      //   return request(app).get('/api/reviews/999/comments').expect(404)
+      // })
+      //test 400 -> invalid ID, ID that
+      //test 200 return empty comments array if none found.
     })
   })
 })
