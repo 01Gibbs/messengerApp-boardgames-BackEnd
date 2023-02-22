@@ -54,7 +54,7 @@ describe('app', () => {
             })
           })
       })
-      test('comment_count is correct', () => {
+      test('200: GET: comment_count is correct', () => {
         return request(app)
           .get('/api/reviews')
           .expect(200)
@@ -73,7 +73,7 @@ describe('app', () => {
             ).toBe('3')
           })
       })
-      test('returns array of objects ordered by date', () => {
+      test('200: GET: returns array of objects ordered by date', () => {
         return request(app)
           .get('/api/reviews')
           .expect(200)
@@ -131,6 +131,14 @@ describe('app', () => {
             })
           })
       })
+      // test('200: GET: responds with empty comment array if none found', () => {
+      //   request(app)
+      //     .get('/api/reviews/1/comments')
+      //     .expect(200)
+      //     .then((body) => {
+      //       console.log(body)
+      //     })
+      // })
       // test('404: GET: respond with not found', () => {
       //   return request(app).get('/api/reviews/999/comments').expect(404)
       // })

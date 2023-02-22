@@ -11,7 +11,11 @@ const fetchCommentsByReview = (reviewId) => {
       values: [reviewId],
     })
     .then((result) => {
-      return result.rows
+      if (!rowCount) {
+        return result.rows
+      } else {
+        return result.rows
+      }
     })
 }
 
