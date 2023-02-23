@@ -54,7 +54,7 @@ describe('app', () => {
             })
           })
       })
-      test('comment_count is correct', () => {
+      test('200: GET: comment_count is correct', () => {
         return request(app)
           .get('/api/reviews')
           .expect(200)
@@ -73,7 +73,7 @@ describe('app', () => {
             ).toBe('3')
           })
       })
-      test('returns array of objects ordered by date', () => {
+      test('200: GET: returns array of objects ordered by date', () => {
         return request(app)
           .get('/api/reviews')
           .expect(200)
@@ -84,7 +84,7 @@ describe('app', () => {
           })
       })
     })
-    describe.only('GET /api/reviews/:review_id', () => {
+    describe('GET /api/reviews/:review_id', () => {
       test('200: GET: responds with server ok message', () => {
         return request(app)
           .get('/api/reviews/1')
@@ -104,7 +104,56 @@ describe('app', () => {
           })
       })
       test('404: GET: respond with not found', () => {
-        return request(app).get('/api/reviews/999').expect(404)
+        return request(app)
+          .get('/api/reviews/999')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('review not found')
+          })
+      })
+    })
+    describe('GET /api/reviews/:review_id/comments', () => {
+      test('200: GET: responds with comments object', () => {
+        return request(app)
+          .get('/api/reviews/2/comments')
+          .expect(200)
+          .then(({ body }) => {
+            body.reviewComments.forEach((comment) => {
+              expect(comment).toMatchObject({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: expect.any(Number),
+              })
+            })
+          })
+      })
+      test('200: GET: responds with empty comment array if none found', () => {
+        return request(app)
+          .get('/api/reviews/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body)
+            expect(body.msg).toBe('comments not found')
+          })
+      })
+      test('404: GET: respond with review does not exist', () => {
+        return request(app)
+          .get('/api/reviews/999/comments')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('review does not exist')
+          })
+      })
+      test('400: GET: responds with bad request when provided non-existent review_id', () => {
+        return request(app)
+          .get('/api/reviews/not-valid/comments')
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request')
+          })
       })
     })
   })
