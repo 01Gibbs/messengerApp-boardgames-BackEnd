@@ -1,7 +1,10 @@
 const express = require('express')
 const app = express()
 const { getCategories } = require('./controllers/category-controllers.js')
-const { getCommentsByReview } = require('./controllers/comments-controllers.js')
+const {
+  getCommentsByReview,
+  postCommentByReview,
+} = require('./controllers/comments-controllers.js')
 const { getReview, getReviews } = require('./controllers/review-controllers.js')
 const {
   handle500s,
@@ -10,11 +13,15 @@ const {
   handlePSQL400s,
 } = require('./controllers/errorHandler-controllers.js')
 
+app.use(express.json())
+
 app.get('/api/categories', getCategories)
 
 app.get('/api/reviews/:review_id/comments', getCommentsByReview)
 
 app.get('/api/reviews/:review_id', getReview)
+
+app.post('/api/reviews/:review_id/comments', postCommentByReview)
 
 app.get('/api/reviews', getReviews)
 

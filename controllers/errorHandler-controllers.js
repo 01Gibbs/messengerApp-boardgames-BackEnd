@@ -7,7 +7,13 @@ exports.handle404s = (request, response, next) => {
 exports.handlePSQL400s = (error, request, response, next) => {
   if (error.code === '22P02') {
     response.status(400).send({ msg: 'Bad Request' })
+  } else if (error.code === '23503') {
+    response.status(404).send({ msg: 'user not found' })
+  } else if (error.code === '23502') {
+    console.log(error, '<<<<<<<<<<<<<<<<<')
+    response.status(400).send({ msg: 'comment not found' })
   } else {
+    console.log(error, 'PSQL ERROR BLOCK <<<<<<<<<<<<<<<<<')
     next(error)
   }
 }

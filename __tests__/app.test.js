@@ -156,5 +156,68 @@ describe('app', () => {
           })
       })
     })
+    describe('POST /api/reviews/:review_id/comments', () => {
+      test('201: POST: responds with added comment', () => {
+        return request(app)
+          .post('/api/reviews/4/comments')
+          .send({ username: 'mallionaire', body: 'testBody' })
+          .expect(201)
+          .then(({ body }) => {
+            const expectedBody = {
+              comment_id: 7,
+              body: 'testBody',
+              review_id: 4,
+              author: 'mallionaire',
+              votes: 0,
+              created_at: expect.any(String),
+            }
+            expect(body).toMatchObject(expectedBody)
+          })
+      })
+      test('201: POST: responds with added comment, without extra key', () => {
+        return request(app)
+          .post('/api/reviews/4/comments')
+          .send({ username: 'mallionaire', body: 'testBody', crisps: 'Cheese' })
+          .expect(201)
+          .then(({ body }) => {
+            const expectedBody = {
+              comment_id: 7,
+              body: 'testBody',
+              review_id: 4,
+              author: 'mallionaire',
+              votes: 0,
+              created_at: expect.any(String),
+            }
+            expect(body).toMatchObject(expectedBody)
+          })
+      })
+      test('404: POST: respond with user not found when given invalid username', () => {
+        return request(app)
+          .post('/api/reviews/4/comments')
+          .send({ username: 'Fish-Are-Friends', body: 'testBody' })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('user not found')
+          })
+      })
+      test('400: POST: respond with comment not found', () => {
+        return request(app)
+          .post('/api/reviews/4/comments')
+          .send({ username: 'mallionaire' })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body).toEqual({ msg: 'comment not found' })
+          })
+      })
+      test('400: POST: respond with user not found when username not provided', () => {
+        return request(app)
+          .post('/api/reviews/4/comments')
+          .send({ body: 'mallionaire' })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body).toEqual({ msg: 'user not found' })
+          })
+      })
+    })
   })
 })

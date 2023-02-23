@@ -1,20 +1,20 @@
 const db = require('../db/connection.js')
 
 const fetchCommentsByReview = (reviewId) => {
-  const queryCommentsByReview = db.query({
-    text: `
-      SELECT *
-      FROM comments
-      WHERE review_id = $1;
-      `,
-    values: [reviewId],
-  })
   const queryReviewExists = db.query({
     text: `
     SELECT * 
     FROM reviews
     WHERE review_id = $1;
     `,
+    values: [reviewId],
+  })
+  const queryCommentsByReview = db.query({
+    text: `
+      SELECT *
+      FROM comments
+      WHERE review_id = $1;
+      `,
     values: [reviewId],
   })
   return Promise.all([queryReviewExists, queryCommentsByReview]).then(
@@ -36,6 +36,33 @@ const fetchCommentsByReview = (reviewId) => {
   )
 }
 
+const insertCommentByReview = (review_id, username, comment) => {
+  if (!username) {
+    return Promise.reject({
+      status: 400,
+      msg: 'user not found',
+    })
+  } else if (!comment) {
+    return Promise.reject({
+      status: 400,
+      msg: 'comment not found',
+    })
+  }
+  const queryInsertComment = db.query({
+    text: `
+        INSERT INTO comments
+        (review_id, author, body)
+        VALUES ($1, $2, $3)
+        RETURNING *
+        `,
+    values: [review_id, username, comment],
+  })
+  return queryInsertComment.then((result) => {
+    return result.rows[0]
+  })
+}
+
 module.exports = {
   fetchCommentsByReview,
+  insertCommentByReview,
 }
