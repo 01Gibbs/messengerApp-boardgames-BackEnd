@@ -10,6 +10,7 @@ const {
   getReviews,
   patchReview,
 } = require('./controllers/review-controllers.js')
+const { getUsers } = require('./controllers/user-controllers.js')
 const {
   handle500s,
   handle404s,
@@ -31,7 +32,7 @@ app.get('/api/reviews', getReviews)
 
 app.patch('/api/reviews/:review_id', patchReview)
 
-app.get('/api/users')
+app.get('/api/users', getUsers)
 
 app.use('/api/*', handle404s)
 
