@@ -12,7 +12,10 @@ exports.handlePSQL400s = (error, request, response, next) => {
     error.detail.includes('is not present in table "reviews"')
   ) {
     response.status(404).send({ msg: 'review does not exist' })
-  } else if (error.code === '23503') {
+  } else if (
+    error.code === '23503' &&
+    error.detail.includes('is not present in table "users"')
+  ) {
     response.status(404).send({ msg: 'user not found' })
   } else if (error.code === '23502') {
     response.status(400).send({ msg: 'comment not found' })
