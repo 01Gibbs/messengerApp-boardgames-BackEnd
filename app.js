@@ -25,6 +25,8 @@ app.post('/api/reviews/:review_id/comments', postCommentByReview)
 
 app.get('/api/reviews', getReviews)
 
+app.get('/api/users')
+
 app.use('/api/*', handle404s)
 
 app.use(handlePSQL400s)
