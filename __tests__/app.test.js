@@ -236,5 +236,113 @@ describe('app', () => {
           })
       })
     })
+    describe('PATCH: /api/reviews/:review_id', () => {
+      test('200: PATCH: responds with updated review', () => {
+        return request(app)
+          .patch('/api/reviews/1')
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body.review)
+            expect(body.review).toMatchObject({
+              review_id: expect.any(Number),
+              title: expect.any(String),
+              review_body: expect.any(String),
+              designer: expect.any(String),
+              review_img_url: expect.any(String),
+              votes: expect.any(Number),
+              category: expect.any(String),
+              owner: expect.any(String),
+              created_at: expect.any(String),
+            })
+          })
+      })
+      test('200: PATCH: responds with correct vote of increment one', () => {
+        return request(app)
+          .patch('/api/reviews/1')
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.review.votes).toBe(2)
+          })
+      })
+      test('200: PATCH: responds with correct vote of decrement one', () => {
+        return request(app)
+          .patch('/api/reviews/1')
+          .send({ inc_votes: -1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.review.votes).toBe(0)
+          })
+      })
+      test('200: PATCH: responds with correct vote of increment ten', () => {
+        return request(app)
+          .patch('/api/reviews/1')
+          .send({ inc_votes: 10 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.review.votes).toBe(11)
+          })
+      })
+      test('200: PATCH: responds with correct vote of decrement ten', () => {
+        return request(app)
+          .patch('/api/reviews/1')
+          .send({ inc_votes: -10 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.review.votes).toBe(-9)
+          })
+      })
+      test('200: PATCH: missing patch details responds with returning current review', () => {
+        return request(app)
+          .patch('/api/reviews/1')
+          .send({})
+          .expect(200)
+          .then(({ body }) => {
+            const expectedReview = {
+              review: {
+                review_id: 1,
+                title: 'Agricola',
+                category: 'euro game',
+                designer: 'Uwe Rosenberg',
+                owner: 'mallionaire',
+                review_body: 'Farmyard fun!',
+                review_img_url:
+                  'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+                created_at: '2021-01-18T10:00:20.514Z',
+                votes: 1,
+              },
+            }
+            expect(body).toMatchObject(expectedReview)
+          })
+      })
+      test('400: PATCH: responds with Bad Request for incorrect path id', () => {
+        return request(app)
+          .patch('/api/reviews/kev-taught-me-well')
+          .send({ inc_votes: 1 })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request')
+          })
+      })
+      test('400: PATCH: responds with Bad Request when incorrect data type / votes is NaN', () => {
+        return request(app)
+          .patch('/api/reviews/1')
+          .send({ inc_votes: 'not-a-number' })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request')
+          })
+      })
+      test('404: PATCH: non-existent review responds with review does not exist', () => {
+        return request(app)
+          .patch('/api/reviews/72347')
+          .send({ inc_votes: 1 })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('review does not exist')
+          })
+      })
+    })
   })
 })

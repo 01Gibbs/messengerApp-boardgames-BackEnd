@@ -5,7 +5,11 @@ const {
   getCommentsByReview,
   postCommentByReview,
 } = require('./controllers/comments-controllers.js')
-const { getReview, getReviews } = require('./controllers/review-controllers.js')
+const {
+  getReview,
+  getReviews,
+  patchReview,
+} = require('./controllers/review-controllers.js')
 const {
   handle500s,
   handle404s,
@@ -24,6 +28,8 @@ app.get('/api/reviews/:review_id', getReview)
 app.post('/api/reviews/:review_id/comments', postCommentByReview)
 
 app.get('/api/reviews', getReviews)
+
+app.patch('/api/reviews/:review_id', patchReview)
 
 app.get('/api/users')
 

@@ -1,4 +1,9 @@
-const { fetchReview, fetchReviews } = require('../models/review-model.js')
+const { request } = require('../app.js')
+const {
+  fetchReview,
+  fetchReviews,
+  updateReview,
+} = require('../models/review-model.js')
 
 const getReview = (request, response, next) => {
   const reviewNumber = request.params.review_id
@@ -17,7 +22,20 @@ const getReviews = (request, response) => {
   })
 }
 
+const patchReview = (request, response, next) => {
+  const review_id = request.params.review_id
+  const voteCount = request.body['inc_votes']
+  updateReview(review_id, voteCount)
+    .then((review) => {
+      response.status(200).send({ review })
+    })
+    .catch((err) => {
+      next(err)
+    })
+}
+
 module.exports = {
   getReview,
   getReviews,
+  patchReview,
 }
