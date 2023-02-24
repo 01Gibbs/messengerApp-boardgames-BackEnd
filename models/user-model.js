@@ -1,6 +1,6 @@
 const db = require('../db/connection.js')
 
-const fetchUsers = (userId) => {
+const fetchUsers = () => {
   const queryString = `SELECT * FROM users`
 
   return db.query(queryString).then((result) => {
