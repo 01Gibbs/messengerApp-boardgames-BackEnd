@@ -135,7 +135,6 @@ describe('app', () => {
           .get('/api/reviews/1/comments')
           .expect(200)
           .then(({ body }) => {
-            console.log(body)
             expect(body.msg).toBe('comments not found')
           })
       })
@@ -216,6 +215,24 @@ describe('app', () => {
           .expect(400)
           .then(({ body }) => {
             expect(body).toEqual({ msg: 'user not found' })
+          })
+      })
+      test('400: POST: responds with Bad Request for incorrect data type ', () => {
+        return request(app)
+          .post('/api/reviews/not-a-number/comments')
+          .send({ username: 'mallionaire', body: 'testBody' })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request')
+          })
+      })
+      test('404: POST: valid path responds with non-existent id', () => {
+        return request(app)
+          .post('/api/reviews/72347/comments')
+          .send({ username: 'mallionaire', body: 'testBody' })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('review does not exist')
           })
       })
     })

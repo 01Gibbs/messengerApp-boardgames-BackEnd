@@ -50,15 +50,22 @@ const insertCommentByReview = (review_id, username, comment) => {
   }
   const queryInsertComment = db.query({
     text: `
-        INSERT INTO comments
-        (review_id, author, body)
-        VALUES ($1, $2, $3)
-        RETURNING *
-        `,
+    INSERT INTO comments
+    (review_id, author, body)
+    VALUES ($1, $2, $3)
+    RETURNING *
+    `,
     values: [review_id, username, comment],
   })
   return queryInsertComment.then((result) => {
-    return result.rows[0]
+    if (result.rows < 1) {
+      return Promise.reject({
+        status: 404,
+        msg: 'review not found',
+      })
+    } else {
+      return result.rows[0]
+    }
   })
 }
 
