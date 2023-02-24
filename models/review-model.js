@@ -59,7 +59,38 @@ const fetchReview = (reviewId) => {
     })
 }
 
+const updateReview = (review_id, voteCount = 0) => {
+  if (!review_id) {
+    return Promise.reject({
+      status: 400,
+      msg: 'review not found',
+    })
+  }
+  return db
+    .query({
+      text: `
+        UPDATE reviews
+        SET votes = votes + $2
+        WHERE review_id = $1
+        RETURNING *;
+        `,
+      values: [review_id, voteCount],
+    })
+    .then((result) => {
+      console.log(result)
+      if (result.rows < 1) {
+        return Promise.reject({
+          status: 404,
+          msg: 'review does not exist',
+        })
+      } else {
+        return result.rows[0]
+      }
+    })
+}
+
 module.exports = {
   fetchReview,
   fetchReviews,
+  updateReview,
 }
