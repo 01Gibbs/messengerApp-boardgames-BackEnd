@@ -77,7 +77,6 @@ const updateReview = (review_id, voteCount = 0) => {
       values: [review_id, voteCount],
     })
     .then((result) => {
-      console.log(result)
       if (result.rows < 1) {
         return Promise.reject({
           status: 404,

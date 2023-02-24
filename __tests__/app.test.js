@@ -236,14 +236,13 @@ describe('app', () => {
           })
       })
     })
-    describe('PATCH: /api/reviews/:review_id', () => {
+    describe('PATCH /api/reviews/:review_id', () => {
       test('200: PATCH: responds with updated review', () => {
         return request(app)
           .patch('/api/reviews/1')
           .send({ inc_votes: 1 })
           .expect(200)
           .then(({ body }) => {
-            console.log(body.review)
             expect(body.review).toMatchObject({
               review_id: expect.any(Number),
               title: expect.any(String),
@@ -341,6 +340,23 @@ describe('app', () => {
           .expect(404)
           .then(({ body }) => {
             expect(body.msg).toBe('review does not exist')
+          })
+      })
+    })
+    describe('GET /api/users', () => {
+      test('200: GET: responds with server ok message', () => {
+        return request(app)
+          .get('/api/users')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.users.length).toBe(4)
+            body.users.forEach((user) => {
+              expect(user).toMatchObject({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            })
           })
       })
     })
