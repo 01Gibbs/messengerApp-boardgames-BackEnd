@@ -83,7 +83,12 @@ describe('app', () => {
             })
           })
       })
+      describe('GET /api/reviews?queries', () => {
+        // test('200: GET retrieves query ', () => {
+        // });
+      })
     })
+    // des
     describe('GET /api/reviews/:review_id', () => {
       test('200: GET: responds with server ok message', () => {
         return request(app)

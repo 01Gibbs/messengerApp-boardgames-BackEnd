@@ -59,6 +59,29 @@ const fetchReview = (reviewId) => {
     })
 }
 
+const fetchReviewQueryRefactor = (reviewId) => {
+  let queryString = `SELECT * FROM users`
+  const queryParams = []
+
+  if (reviewId !== undefined) {
+    queryString += `WHERE user_id = $1`
+    queryParams.push(reviewId)
+  }
+
+  return db.query(queryString, queryParams).then((result) => {
+    const rowCount = result.rowCount
+    if (rowCount < 1) {
+      return Promise.reject({ status: 404, msg: 'review does not exist' })
+    } else {
+      if (rowCount === 1) {
+        return result.rows[0]
+      } else {
+        return result.rows
+      }
+    }
+  })
+}
+
 const updateReview = (review_id, voteCount = 0) => {
   if (!review_id) {
     return Promise.reject({

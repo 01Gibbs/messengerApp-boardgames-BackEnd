@@ -16,6 +16,13 @@ const getReview = (request, response, next) => {
     })
 }
 
+const getReviewQueryRefactor = (request, response, next) => {
+  const userId = request.params.user_id
+  fetchUsers(userId).then((users) => {
+    response.status(200).send({ users })
+  })
+}
+
 const getReviews = (request, response) => {
   fetchReviews().then((reviews) => {
     response.status(200).send({ reviews })
