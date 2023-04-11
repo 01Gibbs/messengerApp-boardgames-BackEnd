@@ -18,7 +18,3 @@ const config =
     : {}
 
 module.exports = new Pool(config)
-
-// if (!process.env.PGDATABASE) {
-//   throw new Error('PGDATABASE not set')
-// }

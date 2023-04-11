@@ -4,7 +4,10 @@ const { convertTimestampToDate, createRef, formatComments } = require('./utils')
 
 const seed = ({ categoryData, commentData, reviewData, userData }) => {
   return db
-    .query(`DROP TABLE IF EXISTS comments;`)
+    .query(`DROP TABLE IF EXISTS uservotes;`)
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS comments;`)
+    })
     .then(() => {
       return db.query(`DROP TABLE IF EXISTS reviews;`)
     })
@@ -48,11 +51,20 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
 			CREATE TABLE comments (
 				comment_id SERIAL PRIMARY KEY,
 				body VARCHAR NOT NULL,
-				review_id INT REFERENCES reviews(review_id) NOT NULL,
+				review_id INT REFERENCES reviews(review_id) ON DELETE CASCADE NOT NULL,
 				author VARCHAR REFERENCES users(username) NOT NULL,
 				votes INT DEFAULT 0 NOT NULL,
 				created_at TIMESTAMP DEFAULT NOW()
 			);`)
+    })
+    .then(() => {
+      return db.query(`
+      CREATE TABLE uservotes (
+        likes_id SERIAL PRIMARY KEY,
+        vote INT NOT NULL,
+        review_id INT REFERENCES reviews(review_id) ON DELETE CASCADE NOT NULL,
+        username VARCHAR REFERENCES users(username) NOT NULL
+      );`)
     })
     .then(() => {
       const insertCategoriesQueryStr = format(
@@ -118,6 +130,16 @@ const seed = ({ categoryData, commentData, reviewData, userData }) => {
         )
       )
       return db.query(insertCommentsQueryStr)
+    })
+    .then(() => {
+      return db.query(`
+      INSERT INTO uservotes
+      (review_id, username, vote)
+      VALUES 
+      (1, '${userData[0].username}', 1),
+      (1, '${userData[2].username}', -1),
+      (2, '${userData[2].username}', 1)
+      `)
     })
 }
 
